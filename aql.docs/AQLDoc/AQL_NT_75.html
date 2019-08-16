@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="style.css">
+<SCRIPT LANGUAGE="JavaScript" SRC="script.jvs"></SCRIPT>
+<TITLE>
+AQLDoc/AQL_NT_75.html
+</TITLE>
+</HEAD>
+<BODY CLASS="MAIN"  LINK="BLUE" VLINK="BLUE" ALINK="PURPLE">
+<H1 ALIGN="CENTER">Non-terminal symbol <SPAN STYLE="COLOR:MAROON"><TT><I>Pragma</I></TT></SPAN></H1>
+<CENTER>
+<SPAN STYLE="FONT-SIZE:XX-SMALL"><TABLE BORDER="2",CELLPADDING="8"><TR><TD BGCOLOR="PINK"><A HREF="#RULES"><SPAN STYLE="FONT-SIZE:XX-SMALL">rule(s)</SPAN></TD><TD BGCOLOR="PINK"><A HREF="#OCCS"><SPAN STYLE="FONT-SIZE:XX-SMALL">occurrences</SPAN></A></TD></TR></TABLE></SPAN>
+</CENTER>
+<P><HR><P>
+<H4 ALIGN="CENTER">Description</H4>
+<TABLE WIDTH="100%" BGCOLOR="WHITE" CELLPADDING="15"><TR><TD>
+
+  This node stands for a pragma statement which allows the user to set
+  up some interactive conveniences dynamically using a few built-in
+  extra-language commands of the form <font
+  color="brown"><tt>#pragma;</tt></font> where <font
+  color="brown"><tt>pragma</tt></font> is an identifier. Currently
+  defined pragmas are:
+  <p>
+  <table align="center", border="2", cellpadding="5">
+  <tr><th align="left"><tt class="code">pragma</tt>
+  </th><th align="left"><i class="kbd">effect</i></th></tr>
+  <tr><td></td></tr>
+  <tr><td><tt class="code">exit</tt></td>
+  <td><i class="kbd">exit AQL</i></td></tr>
+  <tr><td><tt class="code">mute</tt></td>
+  <td><i class="kbd">toggle on/off intermediate displays such as
+      '<tt class=code>value : type</tt>', etc...</i></td></tr>
+  <tr><td><tt class="code">tree</tt></td>
+  <td><i class="kbd">toggle on/off graphical display of syntax tree</i></td></tr>
+  <tr><td><tt class="code">include</tt></td>
+  <td><i class="kbd">start reading from the file (name specified as a quoted string)</i></td></tr>
+  <tr><td><tt class="code">time</tt></td>
+  <td><i class="kbd">toggle on/off execution timing</i></td></tr>
+  <tr><td><tt class="code">gc</tt></td>
+  <td><i class="kbd">force immediate garbage collection</i></td></tr>
+  <tr><td><tt class="code">syntax</tt></td>
+  <td><i class="kbd">toggle on/off parser tracing</i></td></tr>
+  <tr><td><tt class="code">typing</tt></td>
+  <td><i class="kbd">toggle on/off typecheck tracing</i></td></tr>
+  <tr><td><tt class="code">trace</tt></td>
+  <td><i class="kbd">toggle on/off runtime tracing</i></td></tr>
+  <tr><td><tt class="code">kbd</tt></td>
+  <td><i class="kbd">toggle on/off compiled code display</i></td></tr>
+  <tr><td><tt class="code">fields</tt></td>
+  <td><i class="kbd">toggle on/off class fields' code display</i></td></tr>
+  <tr><td><tt class="code">defined</tt></td>
+  <td><i class="kbd">list all the currently defined symbols</i></td></tr>
+  <tr><td><tt class="code">symbols</tt></td>
+  <td><i class="kbd">list all the known (built-in and defined) symbols</i></td></tr>
+  <tr><td><tt class="code">types</tt></td>
+  <td><i class="kbd">list all the registered (declared or not) types</i></td></tr>
+  <tr><td><tt class="code">help</tt></td>
+  <td><i class="kbd">list this information</i></td></tr>
+  </table>
+ 
+<P>
+</TD></TR></TABLE>
+<P><HR><P>
+<SPAN STYLE="FONT-SIZE:LARGER"><A NAME="RULES">Defining</A> rules for nonterminal symbol
+<SPAN STYLE="COLOR:MAROON; FONT-SIZE:LARGER"><TT><I>Pragma</I></TT></SPAN>:</SPAN><P>
+<CENTER>
+<TABLE BGCOLOR="WHITE" BORDER="5" CELLPADDING="20">
+<TR><TD>
+<TABLE BGCOLOR="WHITE" CELLPADDING="6">
+<TR>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<SPAN STYLE="COLOR:MAROON"><TT><I>Pragma</I></TT></SPAN>
+</TD>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<IMG SRC="images/arrows/misc/rarrow.gif">
+</TD>
+<TD VALIGN="TOP">
+<A CLASS="SYMBOL" HREF="AQL_TT_14.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>ID</B></TT></A>&nbsp;
+</TD>
+</TR>
+</TABLE>
+</TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<HR><P>
+<SPAN STYLE="FONT-SIZE:LARGER"><A NAME="OCCS">Occurrences</A> of symbol
+<SPAN STYLE="COLOR:MAROON; FONT-SIZE:LARGER"><TT><I>Pragma</I></TT></SPAN>
+in body of other rules:</SPAN><P>
+<CENTER>
+<TABLE BGCOLOR="WHITE" BORDER="5" CELLPADDING="20">
+<TR><TD>
+<TABLE BGCOLOR="WHITE" CELLPADDING="6">
+<TR>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<A CLASS="SYMBOL" HREF="AQL_NT_74.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Statement</I></TT></A>
+</TD>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+
+<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('AQL_GR_009')"><IMG SRC="images/arrows/misc/rarrow.gif"></A>
+</TD>
+<TD VALIGN="TOP">
+'<A CLASS="SYMBOL" HREF="AQL_TT_25.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>#</B></TT></A>'&nbsp;
+<SPAN STYLE="COLOR:MAROON"><TT><I>Pragma</I></TT></SPAN>&nbsp;
+<A CLASS="SYMBOL" HREF="AQL_NT_76.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>PragmaArgument_opt</I></TT></A>&nbsp;
+<A CLASS="SYMBOL" HREF="AQL_NT_77.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>EOS</I></TT></A>&nbsp;
+</TD>
+</TR>
+</TABLE>
+</TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<HR>
+<SPAN STYLE="COLOR:#F07070; FONT-SIZE:XX-SMALL">
+<P ALIGN="RIGHT"><B>Copyright &copy; 2018 by <A HREF="http://www.hassan-ait-kaci.net/">Hassan A&iuml;t-Kaci</A>; All Rights Reserved.</B></SPAN>
+<P ALIGN="RIGHT"><IMG ALIGN="MIDDLE" SRC="images/hlt/hlt-logo.gif" WIDTH="90" HEIGHT="90">
+</BODY>
+</HTML>

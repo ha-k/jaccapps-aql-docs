@@ -1,0 +1,54 @@
+<HTML>
+<HEAD>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="style.css">
+<TITLE>
+AQLDoc/AQL_GR_020.html
+</TITLE>
+</HEAD>
+<BODY CLASS="MAIN"  LINK="BLUE" VLINK="BLUE" ALINK="PURPLE">
+<H2 ALIGN="CENTER">Rule <TT><I>DefinitionKind_1</I></TT></H2>
+<CENTER>
+<TABLE BGCOLOR="WHITE" BORDER="5" CELLPADDING="20">
+<TR><TD>
+<TABLE BGCOLOR="WHITE" CELLPADDING="6">
+<TR>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<A CLASS="SYMBOL" HREF="AQL_NT_83.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>DefinitionKind</I></TT></A>
+</TD>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<IMG SRC="images/arrows/misc/rarrow.gif">
+</TD>
+<TD VALIGN="TOP">
+'<A CLASS="SYMBOL" HREF="AQL_TT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>operator</B></TT></A>'&nbsp;<A CLASS="SYMBOL" HREF="AQL_NT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Operator</I></TT></A>&nbsp;<A CLASS="SYMBOL" HREF="AQL_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>SPECIFIER</B></TT></A>&nbsp;<A CLASS="SYMBOL" HREF="AQL_TT_10.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>INT</B></TT></A>&nbsp;</TD>
+</TR>
+</TABLE>
+</TD></TR>
+</TABLE>
+</CENTER>
+<P><HR><P>
+<H4 ALIGN="CENTER">Description</H4>
+<TABLE WIDTH="100%" BGCOLOR="WHITE" CELLPADDING="15"><TR><TD>
+ This defines a new, or redefines an existing, operator symbol.
+	     The <A CLASS="SYMBOL" HREF="AQL_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>SPECIFIER</B></TT></A> is <i>&agrave; la</i> Prolog. Indeed,
+	     as in Prolog, AQL operators may be declared at runtime using
+ 	     the built-in <A CLASS="SYMBOL" HREF="AQL_TT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>operator</B></TT></A> keyword followed by an <A CLASS="SYMBOL" HREF="AQL_NT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Operator</I></TT></A> (the
+ 	     one being [re]defined), a fixity/associativity <A CLASS="SYMBOL" HREF="AQL_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>SPECIFIER</B></TT></A>,
+	     and a precedence level: a natural number in the range [1..1200].
+	     For example,
+	    
+	     <pre class="code">
+	             operator + yfx 500;
+	     </pre>
+	     redefines the symbol <tt>'+'</tt> to be an infix binary left-associative
+	     operator with binding </i>looseness</i> 500 (binding looseness is the
+	     opposite of precedence - <i>anti-precedence</i>, so to speak).
+	    
+<P>
+</TD></TR></TABLE>
+<P>
+<HR>
+<SPAN STYLE="COLOR:#F07070; FONT-SIZE:XX-SMALL">
+<P ALIGN="RIGHT"><B>Copyright &copy; 2018 by <A HREF="http://www.hassan-ait-kaci.net/">Hassan A&iuml;t-Kaci</A>; All Rights Reserved.</B></SPAN>
+<P ALIGN="RIGHT"><IMG ALIGN="MIDDLE" SRC="images/hlt/hlt-logo.gif" WIDTH="90" HEIGHT="90">
+</BODY>
+</HTML>

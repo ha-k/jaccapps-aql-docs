@@ -1,0 +1,1484 @@
+<HTML>
+<HEAD>
+<TITLE>
+ancillary.html
+</TITLE>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="D:/hak/hlt/classes/resources/Hilite.Style.css">
+</HEAD>
+<BODY BGCOLOR="#CCCCFF" TEXT="BLACK">
+<CENTER>
+<TABLE BGCOLOR=white WIDTH=50% BORDER=5 CELLPADDING=20>
+<TR><TD ALIGN=CENTER>
+<SPAN STYLE="FONT-SIZE:XX-LARGE"><TT><B>ancillary.grm</B></TT></SPAN>
+<P>
+</TD></TR>
+</TABLE>
+</CENTER>
+<PRE>
+<SPAN STYLE="COLOR:WHITE"><EM>// FILE. . . . . /home/hak/hlt/src/hlt/language/jaccapps/aql/sources/ancillary.grm
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// EDIT BY . . . Hassan Ait-Kaci
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// ON MACHINE. . Hp-Dv7
+</EM></SPAN><SPAN STYLE="COLOR:WHITE"><EM>// STARTED ON. . Wed Oct 17 23:25:49 2012
+</EM></SPAN>
+
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+       
+<P><TABLE>
+<TR><TD VALIGN=TOP><STRONG>Copyright:</STRONG></TD><TD>&nbsp;</TD>
+<TD>&copy; <a href="http://www.hassan-ait-kaci.net/">by the author</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Author:</STRONG></TD><TD>&nbsp;</TD>
+<TD><a href="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</a>
+</TD></tr>
+<TR><TD VALIGN=TOP><STRONG>Version:</STRONG></TD><TD>&nbsp;</TD>
+<TD>Last modified on Thu Oct 18 02:28:40 2012 by hak
+</TD></tr>
+</TABLE>
+
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ********************************** ANCILLARY CODE *********************************** */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ***** This is ancillary code for &lt;a href="../docs/AQLDocs/AQL.html"&gt;AQL.grm&lt;/a&gt; ***** */</EM></SPAN>
+
+%<SPAN STYLE="COLOR:GRAY">{</SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ********************************* GLOBAL VARIABLES ********************************** */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+  <SPAN STYLE="COLOR:#4400DD">Tables</SPAN> tables = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Tables</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">BuiltIns</SPAN> builtins = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">BuiltIns</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">Sanitizer</SPAN> sanitizer = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Sanitizer</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">TypeChecker</SPAN> typeChecker = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TypeChecker</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">Compiler</SPAN> compiler = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Compiler</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">Runtime</SPAN> runtime = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Runtime</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">DisplayManager</SPAN> displayManager = runtime.displayManager<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+  <SPAN STYLE="COLOR:#4400DD">Stack</SPAN> typeParameterTables = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Stack</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:#4400DD">Stack</SPAN> typeParameterLists = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Stack</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+  <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> errors = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+  <SPAN STYLE="COLOR:BLUE"><STRONG>boolean</STRONG></SPAN> error, isShowingFields, isTiming, isMute, showTree;
+
+  <SPAN STYLE="COLOR:BLUE"><STRONG>long</STRONG></SPAN> time;
+
+  <SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> location;
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> initialize <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:WHITE"><EM>//      Compiler.LCO_IS_EFFECTIVE = true;
+</EM></SPAN>      <SPAN STYLE="COLOR:WHITE"><EM>//      Expression.VOID_ASSIGNMENTS = true;
+</EM></SPAN>
+      <SPAN STYLE="COLOR:#4400DD">Comprehension</SPAN>.<SPAN STYLE="COLOR:GREEN">OPAQUE_PARAMETERS</SPAN> = <SPAN STYLE="COLOR:GREEN">false</SPAN>;
+
+      <SPAN STYLE="COLOR:#4400DD">TypeChecker</SPAN>.<SPAN STYLE="COLOR:GREEN">GIVES_DETAILS</SPAN> = <SPAN STYLE="COLOR:GREEN">true</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">TypeChecker</SPAN>.<SPAN STYLE="COLOR:GREEN">ALLOWS_POSITIONAL_NAMED_TUPLES</SPAN> = <SPAN STYLE="COLOR:GREEN">true</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">TypeChecker</SPAN>.<SPAN STYLE="COLOR:GREEN">ALLOWS_UNIFYING_OPAQUE_TUPLES</SPAN> = <SPAN STYLE="COLOR:GREEN">true</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ****************************** EXPRESSION CONSTRUCTIONS ***************************** */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the unary <tt>Application</tt> whose operand and argument are the specified
+    expressions - in this order.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN> app <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> fun, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> arg<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>fun,arg<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:WHITE"><EM>/*.flatten()*/</EM></SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the binary <tt>Application</tt> whose operand and arguments are the specified
+    expressions - in this order.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN> app <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> fun, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> arg1, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> arg2<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>fun,arg1,arg2<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:WHITE"><EM>/*.flatten()*/</EM></SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Application</tt> whose operand is the specified expression, and
+    whose arguments are the expressions in the specified <tt>ArrayList</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN> app <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> fun, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>fun,args<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:WHITE"><EM>/*.flatten()*/</EM></SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Application</tt> whose operand is the specified expression, and
+    whose arguments are the expressions in the specified array.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN> app <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> fun, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN><SPAN STYLE="COLOR:GRAY">[</SPAN><SPAN STYLE="COLOR:GRAY">]</SPAN> args<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>fun,args<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:WHITE"><EM>/*.flatten()*/</EM></SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Abstraction</tt> whose formal variables are in the specified
+    <tt>ArrayList</tt> (of strings), and whose body is the specified <tt>Expression</tt>.
+    This will complain if there are duplicate variable names.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN> abs <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> body<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN> abstraction = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>args,body<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=args.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i--&gt;<SPAN STYLE="COLOR:#33AA33">0</SPAN>;<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>i != args.indexOf<SPAN STYLE="COLOR:GRAY">(</SPAN>args.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+          errors.add<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"duplicate argument name: "</EM></SPAN>
+					  +args.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>,abstraction<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> abstraction;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Abstraction</tt> whose formal variables are the first specified
+    <tt>ArrayList</tt> (of strings), each of whose type is at the corresponding index
+    in the second <tt>ArrayList</tt> (of types), and whose body is the specified
+    <tt>Expression</tt>. This will complain if there are duplicate variable names.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN> abs <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> body<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN> abstraction = abs<SPAN STYLE="COLOR:GRAY">(</SPAN>args,body<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=args.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i--&gt;<SPAN STYLE="COLOR:#33AA33">0</SPAN>;<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        abstraction.parameter<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>.addType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>types.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> abstraction;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Definition</tt> for the name specified as first argument,
+    with (possible) arguments and corresponding types are specified in the second
+    and third <tt>ArrayList</tt>s, and whose body is the given <tt>Expression</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> def <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> body<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> def<SPAN STYLE="COLOR:GRAY">(</SPAN>name,args,types,body,<SPAN STYLE="COLOR:GREEN">false</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the <tt>Definition</tt> for the name specified as first argument,
+    with (possible) arguments and corresponding types are specified in the second
+    and third <tt>ArrayList</tt>s, and whose body is the given <tt>Expression</tt>,
+    along with a boolean flag to indicate whether this definition is that of a class
+    field.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> def <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types,
+			<SPAN STYLE="COLOR:#4400DD">Expression</SPAN> body, <SPAN STYLE="COLOR:BLUE"><STRONG>boolean</STRONG></SPAN> isField<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">Abstraction</SPAN> abstraction = abs<SPAN STYLE="COLOR:GRAY">(</SPAN>args,body<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=args.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i--&gt;<SPAN STYLE="COLOR:#33AA33">0</SPAN>;<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>types.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type != <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+            abstraction.parameter<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>.addType<SPAN STYLE="COLOR:GRAY">(</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> definition = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,name,abstraction,isField<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> definition;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    If the specified <tt>ArrayList</tt> of <tt>Expression</tt>s contains more than one
+    element, this will return the <tt>Sequence</tt> expression consisting of all these
+    expressions. If there is only one element in the list, this expression is returned.
+    If the list is empty, the <tt>void</tt> constant is returned.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> seq <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>expressions.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Constant</SPAN>.<SPAN STYLE="COLOR:GREEN">VOID</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>expressions.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> == <SPAN STYLE="COLOR:#33AA33">1</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>expressions.get<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Sequence</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    This returns an assignment expression. The exact nature of this assignment depends
+    on whether:
+   
+    <ul>
+    <li> <b>the first argument is <tt>null</tt></b>:<br>
+         in which case the assignment returned is a <tt>DummyAssignment</tt> assigning
+         the value of the third argument to the symbol specified as the second argument
+         (which will later be determined to be either local or global by the
+          <tt>Sanitizer</tt>);
+    <li> <b>the first argument is <i>not</i> <tt>null</tt>, but the second argument is
+         <tt>null</tt></b>:<br>
+         in which case the assignment returned is an <tt>ArraySlotAssignment</tt>
+         interpreting the first argument as an array slot to be set to the value of
+         the third argument; 
+    <li> <b>neither the first nor second argument is <tt>null</tt></b>:<br>
+         in which case:
+           <ul>
+           <li><b>the second argument is the empty string:</b>:<br>
+               in which case the assignment returned is a <tt>TupleUpdate</tt>
+               interpreting the first argument as a tuple component to be set to
+               the value of the third argument; 
+           <li><b>the second argument is <i>not</i> the empty string:</b>:<br>
+               in which case the assignment returned is a <tt>FieldUpdate</tt>
+               interpreting the first argument as an object, the second argument
+               as the symbol of one of its fields to be set to the value of the
+                third argument.
+           </ul>
+    </ul>
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> assignment <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> target, <SPAN STYLE="COLOR:#4400DD">String</SPAN> id, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> value<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>target == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">DummyAssignment</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,id,value<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>id == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArraySlotUpdate</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>target,value<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>id.intern<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> == <SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TupleUpdate</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>target,value<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">FieldUpdate</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>target,<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Global</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>locate<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Global</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,id<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,value<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns an <tt>Application</tt> corresponding to an object member written using
+    an object-oriented "message-passing" style (<i>i.e.</i>, using the dot notation):
+    this method's first argument is the object, the second is the member's name (either
+    field or method), and the last argument is the (possibly <tt>null</tt>) list of
+    expressions passed as arguments. This simply builds a normal application whose
+    operand is the member's name and arguments is the list of specified arguments
+    prepended with the object as first argument.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> memberapp <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> object, <SPAN STYLE="COLOR:#4400DD">String</SPAN> member, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> arguments<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>arguments == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">(</SPAN>arguments = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.add<SPAN STYLE="COLOR:GRAY">(</SPAN>object<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>arguments.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+          <SPAN STYLE="COLOR:GRAY">{</SPAN>
+            arguments.add<SPAN STYLE="COLOR:GRAY">(</SPAN>object<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            arguments.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Constant</SPAN>.<SPAN STYLE="COLOR:GREEN">VOID</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+          arguments.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN>,object<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Application</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>locate<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Global</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,member<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,arguments<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:WHITE"><EM>/*.flatten()*/</EM></SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns a <tt>Dummy</tt> expression that may stand for either a <tt>Global</tt>
+    or <tt>Local</tt> name as must be determined by the <tt>Sanitizer</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Dummy</SPAN> symbol <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> x<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Dummy</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,x<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ******************************* SEMANTIC PROCESSING ********************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processPragma <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> pragma, <SPAN STYLE="COLOR:#4400DD">String</SPAN> argument<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"exit"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:#4400DD">Main</SPAN>.exit<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Pragma '"</EM></SPAN>+pragma+<SPAN STYLE="COLOR:GREEN"><EM>"' - "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"include"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>argument == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>syntaxError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"missing file name in #include pragma"</EM></SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+          displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"reading from file: "</EM></SPAN>+argument<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>input<SPAN STYLE="COLOR:GRAY">)</SPAN>.include<SPAN STYLE="COLOR:GRAY">(</SPAN>argument<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">FileNotFoundException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>syntaxError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"file not found: "</EM></SPAN>+argument,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">CircularInclusionException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>syntaxError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"circular file inclusion of file: "</EM></SPAN>+argument,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"mute"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          isMute = !isMute;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"muted output has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>isMute ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>isMute<SPAN STYLE="COLOR:GRAY">)</SPAN> displayManager.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"..."</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"tree"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+	  parseTreeType = <SPAN STYLE="COLOR:GRAY">(</SPAN>showTree = !showTree<SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:GREEN">COMPACT_TREE</SPAN> : <SPAN STYLE="COLOR:GREEN">NO_TREE</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"parse tree display has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>showTree ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"time"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          isTiming = !isTiming;
+          time = <SPAN STYLE="COLOR:#33AA33">0</SPAN><SPAN STYLE="COLOR:GREEN">L</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"execution timing has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>isTiming ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"gc"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">Misc</SPAN>.forceGC<SPAN STYLE="COLOR:GRAY">(</SPAN>!isMute,displayManager.getOutputStream<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"syntax"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          toggleTrace<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"parser trace has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>tracingIsOn<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"typing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          typeChecker.toggleTrace<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"type-checking trace has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>typeChecker.isTracing<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"trace"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          runtime.toggleTrace<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"runtime trace has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>runtime.isTracing<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"code"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          compiler.toggleShowCode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"compiler code display has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>compiler.isShowingCode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"fields"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          isShowingFields = !isShowingFields;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"class field's code display has been turned "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>isShowingFields ? <SPAN STYLE="COLOR:GREEN"><EM>"on"</EM></SPAN> : <SPAN STYLE="COLOR:GREEN"><EM>"off"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"...\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"defined"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          tables.showDefined<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"symbols"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          tables.showOrderedSymbols<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"types"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          tables.showTypes<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>pragma == <SPAN STYLE="COLOR:GREEN"><EM>"help"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          helpPragma<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"unknown pragma (ignored)"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      helpPragma<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> helpPragma <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n*** Known pragmas:"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t--------  ------"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t pragma:  effect"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t--------  ------"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   exit:  exit AQL"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   mute:  toggle on/off intermediate displays such as 'value : type', etc..."</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   tree:  toggle on/off graphical display of syntax tree"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\tinclude:  start reading from the file (name specified as a quoted string)"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   time:  toggle on/off execution timing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t     gc:  force immediate garbage collection"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t syntax:  toggle on/off parser tracing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t typing:  toggle on/off typecheck tracing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t  trace:  toggle on/off runtime tracing"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   code:  toggle on/off compiler code display"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t fields:  toggle on/off class fields' code display"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\tdefined:  list all the currently defined symbols"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\tsymbols:  list all the known (built-in and defined) symbols"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t  types:  list all the registered (declared or not) types"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t   help:  list this information"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processOperator <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> operator, <SPAN STYLE="COLOR:#4400DD">String</SPAN> specifier, <SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> precedence<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Operator</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>operator,specifier,precedence<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Declared operator: "</EM></SPAN>+operator+<SPAN STYLE="COLOR:GREEN"><EM>", "</EM></SPAN>+specifier+<SPAN STYLE="COLOR:GREEN"><EM>", "</EM></SPAN>+precedence<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">NonFatalParseErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          complain<SPAN STYLE="COLOR:GRAY">(</SPAN>syntaxError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processType <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> symbol, <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              checkSafeGlobalType<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol,type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              tables.symbol<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol<SPAN STYLE="COLOR:GRAY">)</SPAN>.getCodeEntry<SPAN STYLE="COLOR:GRAY">(</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Declared type for "</EM></SPAN>+symbol+<SPAN STYLE="COLOR:GREEN"><EM>" : "</EM></SPAN>+type.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">DefinitionException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> checkSafeGlobalType <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> symbol, <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type.isGlobalUnsafe<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>throw</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">DefinitionException</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"'"</EM></SPAN>+symbol+<SPAN STYLE="COLOR:GREEN"><EM>"' has unsafe type : "</EM></SPAN>+
+                                        type.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>location<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> checkLegalDefinition <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Definition</SPAN> def, <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type.isVoid<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> &amp;&amp; def.isSetOnEvaluation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>throw</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TypingErrorException</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"can't assign void: "</EM></SPAN>+def.symbol<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>location<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      checkSafeGlobalType<SPAN STYLE="COLOR:GRAY">(</SPAN>def.symbol<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.name<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> makeSet <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expressions.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewSet</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> : <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewSet</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> makeBag <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expressions.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewBag</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> : <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewBag</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> makeList <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expressions.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> ? <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> : <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processExpression <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> exp = compile<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!error<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type = exp.checkedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+              time = <SPAN STYLE="COLOR:#4400DD">System</SPAN>.currentTimeMillis<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              runtime.run<SPAN STYLE="COLOR:GRAY">(</SPAN>compiler.code<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              time = <SPAN STYLE="COLOR:#4400DD">System</SPAN>.currentTimeMillis<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> - time;
+
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              displayManager.clearTags<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:#4400DD">String</SPAN> s = <SPAN STYLE="COLOR:GREEN"><EM>" : "</EM></SPAN> + type.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+              <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type.isVoid<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+                s = displayManager.displayVoid<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> + s;
+              <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+                <SPAN STYLE="COLOR:BROWN"><STRONG>switch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>runtime.resultSort<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+                  <SPAN STYLE="COLOR:GRAY">{</SPAN>
+                  <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">INT_SORT</SPAN>:
+                    s = displayManager.displayForm<SPAN STYLE="COLOR:GRAY">(</SPAN>runtime.intResult<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,type<SPAN STYLE="COLOR:GRAY">)</SPAN> + s;
+                    <SPAN STYLE="COLOR:BROWN"><STRONG>break</STRONG></SPAN>;
+                  <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">REAL_SORT</SPAN>:
+                    s = displayManager.displayForm<SPAN STYLE="COLOR:GRAY">(</SPAN>runtime.realResult<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> + s;
+                    <SPAN STYLE="COLOR:BROWN"><STRONG>break</STRONG></SPAN>;
+                  <SPAN STYLE="COLOR:BROWN"><STRONG>default</STRONG></SPAN>:
+                    s = displayManager.displayForm<SPAN STYLE="COLOR:GRAY">(</SPAN>runtime.objectResult<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,type<SPAN STYLE="COLOR:GRAY">)</SPAN> + s;
+                    <SPAN STYLE="COLOR:BROWN"><STRONG>break</STRONG></SPAN>;
+                  <SPAN STYLE="COLOR:GRAY">}</SPAN>
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN>s<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayIndexOutOfBoundsException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>dynamicSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"(array bound violation)"</EM></SPAN>,exp<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:WHITE"><EM>//e.printStackTrace();
+</EM></SPAN>            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">DynamicSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>dynamicSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,exp<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:WHITE"><EM>//e.printStackTrace();
+</EM></SPAN>            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Exception</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>dynamicSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.toString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,exp<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              e.printStackTrace<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processDefinition <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> definition<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      compile<SPAN STYLE="COLOR:GRAY">(</SPAN>definition<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!error<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Defined "</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>definition<SPAN STYLE="COLOR:GRAY">)</SPAN>.symbol<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+
+                  <SPAN STYLE="COLOR:GREEN"><EM>" : "</EM></SPAN>+definition.checkedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>"\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processDefinition <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> parameters, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types,
+				<SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>parameters == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        processDefinition<SPAN STYLE="COLOR:GRAY">(</SPAN>locate<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,name,expression<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+        processDefinition<SPAN STYLE="COLOR:GRAY">(</SPAN>locate<SPAN STYLE="COLOR:GRAY">(</SPAN>def<SPAN STYLE="COLOR:GRAY">(</SPAN>name,parameters,types,expression<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processEvaluatedDefinition <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> parameters, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types,
+					 <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      expression = parameters == <SPAN STYLE="COLOR:GREEN">null</SPAN> ? locate<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,name,expression<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+                                      : locate<SPAN STYLE="COLOR:GRAY">(</SPAN>def<SPAN STYLE="COLOR:GRAY">(</SPAN>name,parameters,types,expression<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      processDefinition<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>.setOnEvaluation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!error<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        processExpression<SPAN STYLE="COLOR:GRAY">(</SPAN>locate<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Global</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,name<SPAN STYLE="COLOR:GRAY">)</SPAN>.addType<SPAN STYLE="COLOR:GRAY">(</SPAN>expression.checkedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processTypeAlias <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Defined type alias "</EM></SPAN>
+			  +tables.defineTypeAlias<SPAN STYLE="COLOR:GRAY">(</SPAN>name,type,typeParameterList<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processNewType <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Defined new type "</EM></SPAN>
+			  +tables.defineNewType<SPAN STYLE="COLOR:GRAY">(</SPAN>name,type,typeParameterList<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processStruct <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> name, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> fields, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN> type = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NamedTupleType</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>types,fields<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Defined new type "</EM></SPAN>
+			  +tables.defineNewType<SPAN STYLE="COLOR:GRAY">(</SPAN>name,type,typeParameterList<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;fields.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+                <SPAN STYLE="COLOR:GRAY">{</SPAN>
+                  <SPAN STYLE="COLOR:#4400DD">String</SPAN> field = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>fields.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+		  <SPAN STYLE="COLOR:#4400DD">TupleProjection</SPAN> projection =
+		    <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TupleProjection</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>symbol<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"tuple"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.addType<SPAN STYLE="COLOR:GRAY">(</SPAN>tables.getType<SPAN STYLE="COLOR:GRAY">(</SPAN>name<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,
+					field<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+                  processDefinition<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>tables,
+                                                   field,
+                                                   <SPAN STYLE="COLOR:GREEN"><EM>"tuple"</EM></SPAN>,
+                                                   projection<SPAN STYLE="COLOR:GRAY">)</SPAN>.setIsProjection<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                <SPAN STYLE="COLOR:GRAY">}</SPAN>
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> processClass <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> className,
+                           <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> memberNames, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> memberTypes, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> fieldInits,
+                           <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodNames, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodParameters,
+                           <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodParameterTypes, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodBodies,
+                           <SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> extent<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">ClassType</SPAN> type = <SPAN STYLE="COLOR:GREEN">null</SPAN>;
+
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              type
+                = tables.declareClass<SPAN STYLE="COLOR:GRAY">(</SPAN>className,memberNames,memberTypes,fieldInits,
+				      typeParameterList<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+              <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> fieldSymbols = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> fieldExpressions = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+              <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;memberNames.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+                <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>fieldInits.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN> != <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+                  <SPAN STYLE="COLOR:GRAY">{</SPAN>
+                    fieldSymbols.add<SPAN STYLE="COLOR:GRAY">(</SPAN>memberNames.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                    fieldExpressions.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>fieldInits.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+					 .addType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>memberTypes.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                  <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+              defineFields<SPAN STYLE="COLOR:GRAY">(</SPAN>type,fieldSymbols,fieldExpressions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              defineMethods<SPAN STYLE="COLOR:GRAY">(</SPAN>type,methodNames,methodParameters,methodParameterTypes,
+			    methodBodies<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              displayLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** class "</EM></SPAN>+type.toFullString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,extent<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type != <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+                type.undeclareClass<SPAN STYLE="COLOR:GRAY">(</SPAN>tables<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> defineFields <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ClassType</SPAN> classType, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> fields, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> expressions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;fields.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        defineField<SPAN STYLE="COLOR:GRAY">(</SPAN>classType,<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>fields.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>,<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>expressions.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> defineField <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ClassType</SPAN> classType, <SPAN STYLE="COLOR:#4400DD">String</SPAN> field, <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> parameters = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      parameters.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"this"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      types.add<SPAN STYLE="COLOR:GRAY">(</SPAN>classType<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> def = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>uncaughtCompile<SPAN STYLE="COLOR:GRAY">(</SPAN>def<SPAN STYLE="COLOR:GRAY">(</SPAN>field,parameters,types,expression,<SPAN STYLE="COLOR:GREEN">true</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>isShowingFields<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        def.codeEntry<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.showCode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> defineMethods <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ClassType</SPAN> classType, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodNames,
+			    <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodParameters, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodParameterTypes,
+			    <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> methodBodies<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>methodNames == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;methodNames.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> args = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>methodParameters.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> argTypes = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>methodParameterTypes.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>args == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              <SPAN STYLE="COLOR:GRAY">(</SPAN>args = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"this"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:GRAY">(</SPAN>argTypes = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.add<SPAN STYLE="COLOR:GRAY">(</SPAN>classType<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+            <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>args.isEmpty<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+              <SPAN STYLE="COLOR:GRAY">{</SPAN>
+                args.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"this"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                argTypes.add<SPAN STYLE="COLOR:GRAY">(</SPAN>classType<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                args.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"void"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                argTypes.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">VOID</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:GRAY">}</SPAN>
+            <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+              <SPAN STYLE="COLOR:GRAY">{</SPAN>
+                args.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN>,<SPAN STYLE="COLOR:GREEN"><EM>"this"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+                argTypes.add<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#33AA33">0</SPAN>,classType<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+          uncaughtCompile<SPAN STYLE="COLOR:GRAY">(</SPAN>def<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>methodNames.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN>,args,argTypes,
+			      <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>methodBodies.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+	  <SPAN STYLE="COLOR:WHITE"><EM>// NB - this is not good enough: we must constrain the type of the method
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// to those declared for this method name for this class. Otherwise, this
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// may find ambiguities where there should be none. For example, "class Foo
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// { method f : int -&gt; int; } { f(x) = x+1; }" is ambiguous since the
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// definition does not know that the 'f' being defined is necessarily the
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// one with an int argument and int result. FIX LATER: add a list of types
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// to Definition to use for restraining the type of method definition to be
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// compatible to one of those in it - when typing a method definition,
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// passing the list of types declared in the interface to the definition in
+</EM></SPAN>	  <SPAN STYLE="COLOR:WHITE"><EM>// which the typeCheck method should enforce this.
+</EM></SPAN>        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> allocation <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN> type, <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> dimensions<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:WHITE"><EM>// an error has happened...
+</EM></SPAN>        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Constant</SPAN>.<SPAN STYLE="COLOR:GREEN">NULL</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>dimensions != <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewArray</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>type,dimensions<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>switch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type.kind<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">CLASS</SPAN>:
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewObject</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">SET</SPAN>:
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewSet</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">SetType</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>.baseType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">BAG</SPAN>:
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewBag</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">BagType</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>.baseType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">LIST</SPAN>:
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">NewList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ListType</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>.baseType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:BROWN"><STRONG>case</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.<SPAN STYLE="COLOR:GREEN">DEFINED</SPAN>:
+          <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">HideType</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>allocation<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">DefinedType</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>.definition<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,<SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      errors.add<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"can't allocate an object of type "</EM></SPAN>+type,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Constant</SPAN>.<SPAN STYLE="COLOR:GREEN">NULL</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> uncaughtCompile <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      expression = sanitizer.sanitizeNames<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      expression.typeCheck<SPAN STYLE="COLOR:GRAY">(</SPAN>typeChecker.reset<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      expression.setCheckedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      types.add<SPAN STYLE="COLOR:GRAY">(</SPAN>expression.checkedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      typeChecker.remainingTypes<SPAN STYLE="COLOR:GRAY">(</SPAN>expression,types<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>types.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> &gt; <SPAN STYLE="COLOR:#33AA33">1</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:BROWN"><STRONG>throw</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TypingErrorException</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"ambiguous typing:"</EM></SPAN>+list<SPAN STYLE="COLOR:GRAY">(</SPAN>types<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>location<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>expression <SPAN STYLE="COLOR:BROWN"><STRONG>instanceof</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Definition</SPAN> def = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Definition</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>expression;
+          checkLegalDefinition<SPAN STYLE="COLOR:GRAY">(</SPAN>def,def.checkedType<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          def.registerCodeEntry<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      sanitizer.sanitizeSorts<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      compiler.compile<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expression;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>boolean</STRONG></SPAN> errors <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      error = <SPAN STYLE="COLOR:GREEN">false</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;errors.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          complain<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Error</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>errors.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          error = <SPAN STYLE="COLOR:GREEN">true</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+      errors.clear<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> error;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> compile <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>!errors<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>try</STRONG></SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              expression = uncaughtCompile<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+          <SPAN STYLE="COLOR:BROWN"><STRONG>catch</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>e.msg<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,e.extent<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              error = <SPAN STYLE="COLOR:GREEN">true</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> expression;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:MAGENTA"><STRONG>static</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">String</SPAN> list <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> lst<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:#4400DD">StringBuffer</SPAN> buf = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StringBuffer</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>" "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;lst.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          buf.append<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN>i==<SPAN STYLE="COLOR:#33AA33">0</SPAN>?<SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN>:<SPAN STYLE="COLOR:GREEN"><EM>", "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>lst.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      buf.append<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>" "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> buf.toString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> displayAllTypes <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> expression<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      expression = sanitizer.sanitizeNames<SPAN STYLE="COLOR:GRAY">(</SPAN>expression<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> types = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      typeChecker.allTypes<SPAN STYLE="COLOR:GRAY">(</SPAN>expression,types<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>types.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> == <SPAN STYLE="COLOR:#33AA33">0</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        complain<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"no typing possible for "</EM></SPAN>+expression,expression<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Possible typing"</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN>types.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>&gt;<SPAN STYLE="COLOR:#33AA33">1</SPAN>?<SPAN STYLE="COLOR:GREEN"><EM>"s"</EM></SPAN>:<SPAN STYLE="COLOR:GREEN"><EM>""</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>+<SPAN STYLE="COLOR:GREEN"><EM>" found:\n"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i&lt;types.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>; i++<SPAN STYLE="COLOR:GRAY">)</SPAN>
+            <SPAN STYLE="COLOR:GRAY">{</SPAN>
+              <SPAN STYLE="COLOR:#4400DD">Type</SPAN>.resetNames<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+              display<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"\n\t"</EM></SPAN>+<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Type</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>types.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.toQuantifiedString<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+            <SPAN STYLE="COLOR:GRAY">}</SPAN>
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+      newLine<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* **********************************   HELP   FUNCTIONS   ***************************** */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns a static semantics error object with specified message.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN> staticSemanticsError <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setLabel<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Static Semantics Error: "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setMsg<SPAN STYLE="COLOR:GRAY">(</SPAN>msg<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns a static semantics error object with specified message, and situated
+    as the specifed <tt>Locatable</tt> extent.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN> staticSemanticsError <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg, <SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> extent<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>msg<SPAN STYLE="COLOR:GRAY">)</SPAN>.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>extent<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns a dynamic semantics (<i>i.e.</i>, execution) error object with specified message.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN> dynamicSemanticsError <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setLabel<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"Dynamic Semantics Error: "</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.setMsg<SPAN STYLE="COLOR:GRAY">(</SPAN>msg<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns a dynamic semantics (<i>i.e.</i>, execution) error object with specified message,
+    and situated as the specifed <tt>Locatable</tt> extent.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Error</SPAN> dynamicSemanticsError <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> msg, <SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> extent<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> dynamicSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN>msg<SPAN STYLE="COLOR:GRAY">)</SPAN>.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>extent<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    This method is used to situate an expression's abstract syntax with respect
+    to its concrete syntax origin (specified as the given <tt>Locatable</tt>).
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> locate <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> e, <SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> l<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> e.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>l<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    This method is used to situate an expression's abstract syntax with the
+    extent of the latest <tt>location</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> locate <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Expression</SPAN> e<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> e.setExtent<SPAN STYLE="COLOR:GRAY">(</SPAN>location<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">Expression</SPAN> locateSymbol <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ParseNode</SPAN> node<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> locate<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol<SPAN STYLE="COLOR:GRAY">(</SPAN>node.svalue<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>,node<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the latest table of type parameters (forming a quantified type scope).
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN> typeParameterTable <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">HashMap</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>typeParameterTables.peek<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Returns the latest list of type parameters in the order they were specified (forming
+    a quantified type scope).
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN> typeParameterList <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">StaticSemanticsErrorException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>typeParameterLists.peek<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Pushes a new scope of quantified type parameters in the type parameters stack.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> pushTypeParameters <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      typeParameterTables.push<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">HashMap</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      typeParameterLists.push<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">ArrayList</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Pops the type parameters stack - in effect, leaving the latest a quantified type scope.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> popTypeParameters <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      typeParameterTables.pop<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      typeParameterLists.pop<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Looks up the current nesting of quantified type scopes (<i>i.e.</i>, the type
+    parameters stack), to determine if the specified symbol is a type parameter - in
+    which case it returns it - or not - in which case it returns <tt>null</tt>. The
+    scopes are visited from the inside out in order to take nested quantification
+    into account.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TypeParameter</SPAN> getTypeParameter <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> symbol<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>for</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:BLUE"><STRONG>int</STRONG></SPAN> i=typeParameterTables.size<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>-<SPAN STYLE="COLOR:#33AA33">1</SPAN>; i&gt;=<SPAN STYLE="COLOR:#33AA33">0</SPAN>; i--<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">TypeParameter</SPAN> type = <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">TypeParameter</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">HashMap</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>typeParameterTables.get<SPAN STYLE="COLOR:GRAY">(</SPAN>i<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.get<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>type != <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> type;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN> <SPAN STYLE="COLOR:GREEN">null</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Registers the specified string as the name of a quantified type parameter in the
+    latest type parameter scope. Reports an error if the type parameter is a
+    duplicate.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> registerTypeParameter <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> symbol<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>getTypeParameter<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol<SPAN STYLE="COLOR:GRAY">)</SPAN> == <SPAN STYLE="COLOR:GREEN">null</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+        <SPAN STYLE="COLOR:GRAY">{</SPAN>
+          <SPAN STYLE="COLOR:#4400DD">TypeParameter</SPAN> type = <SPAN STYLE="COLOR:BROWN"><STRONG>new</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">TypeParameter</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          typeParameterTable<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.put<SPAN STYLE="COLOR:GRAY">(</SPAN>symbol,type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+          typeParameterList<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.add<SPAN STYLE="COLOR:GRAY">(</SPAN>type<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+        <SPAN STYLE="COLOR:GRAY">}</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>else</STRONG></SPAN>
+        errors.add<SPAN STYLE="COLOR:GRAY">(</SPAN>staticSemanticsError<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"duplicate type parameter: "</EM></SPAN>+symbol,location<SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Flushes the parser's token stack (<i>i.e.</i>, commits all token choices as
+    definitively valid), and prints out a prompt if needed for interactive input.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> commitParse <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:RED"><STRONG>throws</STRONG></SPAN> <SPAN STYLE="COLOR:#4400DD">IOException</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      cutAll<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+      <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Tokenizer</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>input<SPAN STYLE="COLOR:GRAY">)</SPAN>.prompt<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Sets the location to that of the specified <tt>Locatable</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setLocation <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Locatable</SPAN> locatable<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      location = locatable;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Sets the location to that of the current parse node (<i>i.e.</i>, the node
+    currently at the top of the parse stack).
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setLocation <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      setLocation<SPAN STYLE="COLOR:GRAY">(</SPAN>currentNode<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>public</STRONG></SPAN> <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> setOutputStream <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">PrintStream</SPAN> stream<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      displayManager.setOutputStream<SPAN STYLE="COLOR:GRAY">(</SPAN>stream<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Displays the specified string on the standard output stream.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> display <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> s<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>isMute<SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+
+      displayManager.print<SPAN STYLE="COLOR:GRAY">(</SPAN>s<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Displays the specified string on the standard output stream, and ends it with a newline.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> displayLine <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">String</SPAN> s<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>isMute<SPAN STYLE="COLOR:GRAY">)</SPAN> <SPAN STYLE="COLOR:BROWN"><STRONG>return</STRONG></SPAN>;
+
+      displayManager.println<SPAN STYLE="COLOR:GRAY">(</SPAN>s<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+
+      <SPAN STYLE="COLOR:BROWN"><STRONG>if</STRONG></SPAN> <SPAN STYLE="COLOR:GRAY">(</SPAN>isTiming<SPAN STYLE="COLOR:GRAY">)</SPAN>
+        displayManager.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GREEN"><EM>"*** Execution time = "</EM></SPAN>+time+<SPAN STYLE="COLOR:GREEN"><EM>" ms"</EM></SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Outputs a newline on the standard output stream.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> newLine <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      displayManager.println<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+  
+</PRE>
+<HR>
+<CENTER>
+<TABLE BGCOLOR="WHITE" WIDTH=90% BORDER=1 CELLPADDING=10>
+<TR><TD><SPAN STYLE="COLOR:BLACK">
+
+    Invokes this parser's error manager's reporting error method with the specified
+    <tt>Error</tt>.
+   
+</SPAN></TD></TR>
+</TABLE>
+</CENTER>
+<P>
+<PRE>
+
+  <SPAN STYLE="COLOR:MAGENTA"><STRONG>final</STRONG></SPAN> <SPAN STYLE="COLOR:BLUE"><STRONG>void</STRONG></SPAN> complain <SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:#4400DD">Error</SPAN> error<SPAN STYLE="COLOR:GRAY">)</SPAN>
+    <SPAN STYLE="COLOR:GRAY">{</SPAN>
+      errorManager<SPAN STYLE="COLOR:GRAY">(</SPAN><SPAN STYLE="COLOR:GRAY">)</SPAN>.reportError<SPAN STYLE="COLOR:GRAY">(</SPAN>error<SPAN STYLE="COLOR:GRAY">)</SPAN>;
+    <SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+%<SPAN STYLE="COLOR:GRAY">}</SPAN>
+
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* *****************************  END OF ANCILLARY CODE  ******************************* */</EM></SPAN>
+<SPAN STYLE="COLOR:WHITE"><EM>/* ************************************************************************************* */</EM></SPAN>
+
+</PRE>
+<P>
+<HR>
+<P ALIGN="RIGHT"><SPAN STYLE="COLOR:#F07070"><EM>
+This file was generated on Mon Mar 26 09:27:06 CEST 2018 from file <SPAN STYLE="COLOR:BROWN"><KBD>ancillary.grm</KBD></SPAN><BR>by the <SPAN STYLE="COLOR:BROWN"><KBD>hlt.language.tools.Hilite</KBD></SPAN> Java tool written by <A HREF="mailto:hak@acm.org">Hassan A&iuml;t-Kaci</A></EM></SPAN>
+<P>
+<HR>
+</BODY>
+</HTML>

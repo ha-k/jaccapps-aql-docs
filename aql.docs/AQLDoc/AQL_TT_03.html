@@ -1,0 +1,137 @@
+<HTML>
+<HEAD>
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="style.css">
+<SCRIPT LANGUAGE="JavaScript" SRC="script.jvs"></SCRIPT>
+<TITLE>
+AQLDoc/AQL_TT_03.html
+</TITLE>
+</HEAD>
+<BODY CLASS="MAIN"  LINK="BLUE" VLINK="BLUE" ALINK="PURPLE">
+<H1 ALIGN="CENTER">Terminal symbol <SPAN STYLE="COLOR:MAROON">'<TT><B>operator</B></TT>'</SPAN></H1>
+<SPAN STYLE="FONT-SIZE:LARGER">Occurrences of symbol
+'<SPAN STYLE="COLOR:MAROON; FONT-SIZE:LARGER"><TT><B>operator</B></TT></SPAN>'
+in grammar rules:</SPAN><P>
+<CENTER>
+<TABLE BGCOLOR="WHITE" BORDER="5" CELLPADDING="20">
+<TR><TD>
+<TABLE BGCOLOR="WHITE" CELLPADDING="6">
+<TR>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+<A CLASS="SYMBOL" HREF="AQL_NT_83.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>DefinitionKind</I></TT></A>
+</TD>
+<TD ALIGN="RIGHT" VALIGN="TOP">
+
+<A CLASS="SYMBOL" HREF="javascript:showRuleDoc('AQL_GR_020')"><IMG SRC="images/arrows/misc/rarrow.gif"></A>
+</TD>
+<TD VALIGN="TOP">
+'<SPAN STYLE="COLOR:MAROON"><TT><B>operator</B></TT></SPAN>'&nbsp;
+<A CLASS="SYMBOL" HREF="AQL_NT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Operator</I></TT></A>&nbsp;
+<A CLASS="SYMBOL" HREF="AQL_TT_15.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>SPECIFIER</B></TT></A>&nbsp;
+<A CLASS="SYMBOL" HREF="AQL_TT_10.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>INT</B></TT></A>&nbsp;
+</TD>
+</TR>
+</TABLE>
+</TD></TR>
+</TABLE>
+</CENTER>
+<P><HR><P>
+<H4 ALIGN="CENTER">Description</H4>
+<TABLE WIDTH="100%" BGCOLOR="WHITE" CELLPADDING="15"><TR><TD>
+  
+  The first argument of <A CLASS="SYMBOL" HREF="AQL_TT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>operator</B></TT></A> can be any syntactically well-formed
+  AQL functor (an <A CLASS="SYMBOL" HREF="AQL_NT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>Operator</I></TT></A>). In particular, it need not be known as
+  operator prior to runtime. AQL's tokenizer will recognize as a
+  functor any token that is either an AQL identifier (<A CLASS="SYMBOL" HREF="AQL_TT_14.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>ID</B></TT></A>), or a
+  maximal sequence of non alphanumerical characters. AQL also supports
+  the classical prefix function notation used in math and conventional
+  programming. Thus, any AQL functor, whether declared operator or not,
+  can always be parsed as a prefix operator preceding a parenthesized
+  comma-separated sequence of arguments. Whether it is a declared
+  operator determines how it may be parsed otherwise. For example:
+  
+  <pre class="code">
+          AQL> 1 + 2;
+          3 : int
+          AQL> +(1,2). 
+          3 : int
+  </pre>
+  Note that because AQL's functions are first-class citizens, defined
+  functors are themselves expressions of higher-types and can also be
+  parsed as <A CLASS="SYMBOL" HREF="AQL_NT_44.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>UntypedExpression</I></TT></A>s (see <A CLASS="SYMBOL" HREF="AQL_NT_57.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><I>OperatorExpression</I></TT></A>).
+ 
+  <p>
+ 
+  The second argument of <A CLASS="SYMBOL" HREF="AQL_TT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>operator</B></TT></A> is an <A CLASS="SYMBOL" HREF="AQL_TT_10.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>INT</B></TT></A> and denotes the binding
+  looseness (as opposed to precedence) of the given operator. AQL uses
+  the same dynamic operator specification used by Prolog's
+  <tt>op/3</tt> meta-operator. Note that looseness works as the
+  opposite of what is known as operator binding precedence used in
+  parsing: the smaller an operator's binding looseness, the higher its
+  precedence. In fact, if the looseness is <i>L</i>, then the
+  precedence is <i>P</i> = 1200-<i>L</i>+1. Thus, both binding
+  looseness and precedence range inclusively from 1 (min looseness, max
+  precedence) to 1200 (max looseness, min precedence).
+  
+  <p>
+ 
+  The third argument of <A CLASS="SYMBOL" HREF="AQL_TT_03.html" TARGET="MAIN" ONCLICK="opener.focus()"><TT><B>operator</B></TT></A> is called the operator's
+  specifier. It is a symbol that encodes three kinds of information
+  concerning the operator: 
+  
+  <ol>
+  <li><i>arity</i> (unary or binary),
+  <li><i>fixity</i> (prefix, infix, or postfix),
+  <li><i>associativity</i> (left-, right-, or non-associative).
+  </ol>
+  
+  <p>
+  
+  <a name="specifier"></a> 
+  The specifier is an identifier consisting of either two or three of the
+  letters <tt>'f'</tt>, <tt>'x'</tt>, and <tt>'y'</tt>, which are
+  interpreted as follows. The letter <tt>'f'</tt> stands for the
+  operator's position in an expression, and the letters <tt>'x'</tt> and
+  <tt>'y'</tt> stand for the arguments' positions. The letters
+  <tt>'f'</tt>, <tt>'y'</tt>, and <tt>'x'</tt>, are simply mnemonics for,
+  respectively, <i>"<tt>functor</tt>"</i> (<i>i.e.</i>, indicating the
+  position of the operator symbol with respect to its argument(s)),
+  <i>"<tt>yes</tt>"</i> (<i>i.e.</i>, the argument associates on this side
+  of the operator), and <i>"<tt>no</tt>"</i> (<i>i.e.</i>, the does not
+  associate on this side of the operator).  In other words, a <tt>'y'</tt>
+  occurring on the left (resp., right) of <tt>'f'</tt>, means that the
+  operator is left-associative (resp., right-associative). An <tt>'x'</tt>
+  occurring on the left (resp., right) of <tt>'f'</tt>, means that the
+  operator is <i>not</i> left-associative (resp.,
+  right-associative). Thus, the possible operator specifiers are:
+  
+  <p>
+  
+  <table bgcolor=white align=center border=1 cellpadding=3>
+  <tr><th align=left><i>Specifier</i></th><th align=left><i>Arity</i></th>
+  <th align=left><i>Fixity</i></th><th align=left><i>Associativity</i></th><tr>
+  <tr><td><tt>fx</tt></td><td>unary </td><td>prefix </td><td>non-associative</td><tr>
+  <tr><td><tt>fy</tt></td><td>unary </td><td>prefix </td><td>right-associative</td><tr>
+  <tr><td><tt>xf</tt></td><td>unary </td><td>postfix</td><td>non-associative</td><tr>
+  <tr><td><tt>yf</tt></td><td>unary </td><td>postfix</td><td>left-associative</td><tr>
+  <tr><td><tt>xfx</tt></td><td>binary</td><td>infix  </td><td>non-associative</td><tr>
+  <tr><td><tt>xfy</tt></td><td>binary</td><td>infix  </td><td>right-associative</td><tr>
+  <tr><td><tt>yfx</tt></td><td>binary</td><td>infix  </td><td>left-associative</td><tr>
+  </table>
+  
+  <p>
+  
+  Note that <tt>yfy</tt> is not allowed as an operator specifier
+  because that would mean an ambiguous way of parsing the operator by
+  associating either to the left or to the right.
+ 
+ 
+<P>
+</TD></TR></TABLE>
+<P><HR><P>
+<P>
+<HR>
+<SPAN STYLE="COLOR:#F07070; FONT-SIZE:XX-SMALL">
+<P ALIGN="RIGHT"><B>Copyright &copy; 2018 by <A HREF="http://www.hassan-ait-kaci.net/">Hassan A&iuml;t-Kaci</A>; All Rights Reserved.</B></SPAN>
+<P ALIGN="RIGHT"><IMG ALIGN="MIDDLE" SRC="images/hlt/hlt-logo.gif" WIDTH="90" HEIGHT="90">
+</BODY>
+</HTML>
